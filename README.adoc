@@ -1,4 +1,4 @@
-= svd2rdf - System View Description to Register Description Format
+= svd2rdf: System View Description to Register Description Format
 
 Converts SVD to RDF.
 

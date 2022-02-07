@@ -1,0 +1,199 @@
+---
+source: src/lib.rs
+assertion_line: 208
+expression: rdf
+
+---
+schema:
+  version: v0.1
+design:
+  name: ARM_Example
+  version: "1.2"
+root:
+  children:
+    - timer0
+    - timer1
+    - timer2
+elements:
+  timer0:
+    type: blk
+    children:
+      - timer0.cr
+      - timer0.sr
+      - timer0.int
+      - timer0.count
+      - timer0.match
+      - timer0.prescale_rd
+      - timer0.prescale_wr
+      - "timer0.reload[0]"
+      - "timer0.reload[1]"
+      - "timer0.reload[2]"
+      - "timer0.reload[3]"
+    id: timer0
+    name: timer0
+    addr: "0x40010000"
+    offset: "0x40010000"
+  timer0.cr:
+    type: reg
+    fields:
+      - name: en
+        lsb: 0
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+      - name: rst
+        lsb: 1
+        nbits: 1
+        access: write-only
+        reset: "0x0"
+      - name: cnt
+        lsb: 2
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+      - name: mode
+        lsb: 4
+        nbits: 3
+        access: read-write
+        reset: "0x0"
+      - name: psc
+        lsb: 7
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+      - name: cntsrc
+        lsb: 8
+        nbits: 4
+        access: read-write
+        reset: "0x0"
+      - name: capsrc
+        lsb: 12
+        nbits: 4
+        access: read-write
+        reset: "0x0"
+      - name: capedge
+        lsb: 16
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+      - name: trgext
+        lsb: 20
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+      - name: reload
+        lsb: 24
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+      - name: idr
+        lsb: 26
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+      - name: s
+        lsb: 31
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+    id: timer0.cr
+    name: cr
+    addr: "0x0"
+    offset: "0x0"
+  timer0.sr:
+    type: reg
+    fields:
+      - name: run
+        lsb: 0
+        nbits: 1
+        access: read-only
+        reset: "0x0"
+      - name: match
+        lsb: 8
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+      - name: un
+        lsb: 9
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+      - name: ov
+        lsb: 10
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+      - name: rst
+        lsb: 12
+        nbits: 1
+        access: read-only
+        reset: "0x0"
+      - name: reload
+        lsb: 14
+        nbits: 2
+        access: read-only
+        reset: "0x0"
+    id: timer0.sr
+    name: sr
+    addr: "0x4"
+    offset: "0x4"
+  timer0.int:
+    type: reg
+    fields:
+      - name: en
+        lsb: 0
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+      - name: mode
+        lsb: 4
+        nbits: 3
+        access: read-write
+        reset: "0x0"
+    id: timer0.int
+    name: int
+    addr: "0x10"
+    offset: "0x10"
+  timer0.count:
+    type: reg
+    fields: []
+    id: timer0.count
+    name: count
+    addr: "0x20"
+    offset: "0x20"
+  timer0.match:
+    type: reg
+    fields: []
+    id: timer0.match
+    name: match
+    addr: "0x24"
+    offset: "0x24"
+  timer0.prescale_rd:
+    type: reg
+    fields: []
+    id: timer0.prescale_rd
+    name: prescale_rd
+    addr: "0x28"
+    offset: "0x28"
+  timer0.prescale_wr:
+    type: reg
+    fields: []
+    id: timer0.prescale_wr
+    name: prescale_wr
+    addr: "0x28"
+    offset: "0x28"
+  timer1:
+    type: blk
+    children: []
+    id: timer1
+    name: timer1
+    addr: "0x40010100"
+    offset: "0x40010100"
+  timer2:
+    type: blk
+    children: []
+    id: timer2
+    name: timer2
+    addr: "0x40010200"
+    offset: "0x40010200"
+

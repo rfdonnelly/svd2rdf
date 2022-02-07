@@ -1,0 +1,7 @@
+= svd2rdf - System View Description to Register Description Format
+
+Converts SVD to RDF.
+
+RDF (Register Description Format) is a custom format similar to SVD (System View Description) the prioritizes client simplicity.
+
+RDF reduces the amount of client side logic needed to transform and expand SVD.

@@ -1,14 +1,20 @@
-use svd_parser;
-
 use svd2rdf::Rdf;
 
-use std::fs::File;
-use std::io::Read;
+use clap::Parser;
+use svd_parser;
+
+#[derive(Parser)]
+#[clap(about, version, author)]
+struct Args {
+    /// The SVD file to convert.
+    file: String
+}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let svd = &mut String::new();
-    File::open("tests/input/example.svd")?.read_to_string(svd)?;
-    let device = svd_parser::parse(svd)?;
+    let args = Args::parse();
+
+    let svd = std::fs::read_to_string(&args.file)?;
+    let device = svd_parser::parse(&svd)?;
 
     let rdf = Rdf::from(device);
     println!("{}", serde_json::to_string(&rdf)?);

@@ -259,6 +259,18 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
     fields.sort_by_key(|field| field.lsb);
     fields.reverse();
 
+    if fields.is_empty() {
+        let inferred_field = Field {
+            name: "inferred".to_string(),
+            lsb: 0,
+            nbits: 32,
+            access: "inferred".to_string(),
+            reset: "0x0".to_string(),
+            doc: "inferred".to_string(),
+        };
+        fields.push(inferred_field);
+    }
+
     fields
 }
 

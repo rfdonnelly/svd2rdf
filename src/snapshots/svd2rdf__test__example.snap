@@ -1,6 +1,6 @@
 ---
 source: src/lib.rs
-assertion_line: 299
+assertion_line: 311
 expression: rdf
 
 ---
@@ -234,7 +234,13 @@ elements:
     doc: Interrupt Register
   timer0.count:
     type: reg
-    fields: []
+    fields:
+      - name: inferred
+        lsb: 0
+        nbits: 32
+        access: inferred
+        reset: "0x0"
+        doc: inferred
     id: timer0.count
     name: count
     addr: "0x40010020"
@@ -242,7 +248,13 @@ elements:
     doc: The Counter Register reflects the actual Value of the Timer/Counter
   timer0.match:
     type: reg
-    fields: []
+    fields:
+      - name: inferred
+        lsb: 0
+        nbits: 32
+        access: inferred
+        reset: "0x0"
+        doc: inferred
     id: timer0.match
     name: match
     addr: "0x40010024"
@@ -250,7 +262,13 @@ elements:
     doc: The Match Register stores the compare Value for the MATCH condition
   timer0.prescale_rd:
     type: reg
-    fields: []
+    fields:
+      - name: inferred
+        lsb: 0
+        nbits: 32
+        access: inferred
+        reset: "0x0"
+        doc: inferred
     id: timer0.prescale_rd
     name: prescale_rd
     addr: "0x40010028"
@@ -258,7 +276,13 @@ elements:
     doc: The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value
   timer0.prescale_wr:
     type: reg
-    fields: []
+    fields:
+      - name: inferred
+        lsb: 0
+        nbits: 32
+        access: inferred
+        reset: "0x0"
+        doc: inferred
     id: timer0.prescale_wr
     name: prescale_wr
     addr: "0x40010028"
@@ -266,7 +290,13 @@ elements:
     doc: The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value
   "timer0.reload[0]":
     type: reg
-    fields: []
+    fields:
+      - name: inferred
+        lsb: 0
+        nbits: 32
+        access: inferred
+        reset: "0x0"
+        doc: inferred
     id: "timer0.reload[0]"
     name: "reload[0]"
     addr: "0x40010050"
@@ -274,7 +304,13 @@ elements:
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
   "timer0.reload[1]":
     type: reg
-    fields: []
+    fields:
+      - name: inferred
+        lsb: 0
+        nbits: 32
+        access: inferred
+        reset: "0x0"
+        doc: inferred
     id: "timer0.reload[1]"
     name: "reload[1]"
     addr: "0x40010054"
@@ -282,7 +318,13 @@ elements:
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
   "timer0.reload[2]":
     type: reg
-    fields: []
+    fields:
+      - name: inferred
+        lsb: 0
+        nbits: 32
+        access: inferred
+        reset: "0x0"
+        doc: inferred
     id: "timer0.reload[2]"
     name: "reload[2]"
     addr: "0x40010058"
@@ -290,7 +332,13 @@ elements:
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
   "timer0.reload[3]":
     type: reg
-    fields: []
+    fields:
+      - name: inferred
+        lsb: 0
+        nbits: 32
+        access: inferred
+        reset: "0x0"
+        doc: inferred
     id: "timer0.reload[3]"
     name: "reload[3]"
     addr: "0x4001005c"

@@ -124,8 +124,7 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
                                 let child_name = name.replace("%s", &i.to_string());
                                 let child_id = format!("{}.{}", path, child_name);
 
-                                let mut fields = Vec::new();
-                                collect_fields(&register, &mut fields);
+                                let fields = collect_fields(&register);
 
                                 let element = Element {
                                     typ: ElementType::Reg { fields },
@@ -173,7 +172,9 @@ fn peripheral_child_ids(path: &str, peripheral: &svd::PeripheralInfo, child_ids:
     }
 }
 
-fn collect_fields(register: &svd::RegisterInfo, fields: &mut Vec<Field>) {
+fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
+    let mut fields = Vec::new();
+
     match &register.fields {
         Some(svd_fields) => {
             for field in svd_fields {
@@ -205,11 +206,15 @@ fn collect_fields(register: &svd::RegisterInfo, fields: &mut Vec<Field>) {
         }
         None => {},
     }
+
+    fields.sort_by_key(|field| field.lsb);
+    fields.reverse();
+
+    fields
 }
 
 fn visit_register(path: &str, register: svd::RegisterInfo, elements: &mut IndexMap<String, Element>) {
-    let mut fields = Vec::new();
-    collect_fields(&register, &mut fields);
+    let fields = collect_fields(&register);
 
     let name = register.name.to_lowercase();
     let element = Element {

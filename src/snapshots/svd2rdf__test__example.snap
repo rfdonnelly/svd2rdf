@@ -1,6 +1,6 @@
 ---
 source: src/lib.rs
-assertion_line: 287
+assertion_line: 299
 expression: rdf
 
 ---
@@ -129,7 +129,7 @@ elements:
         doc: Enable
     id: timer0.cr
     name: cr
-    addr: "0x0"
+    addr: "0x40010000"
     offset: "0x0"
     doc: Control Register
   timer0.sr:
@@ -197,7 +197,7 @@ elements:
         doc: Shows if Timer is running or not
     id: timer0.sr
     name: sr
-    addr: "0x4"
+    addr: "0x40010004"
     offset: "0x4"
     doc: Status Register
   timer0.int:
@@ -229,7 +229,7 @@ elements:
         doc: Interrupt Enable
     id: timer0.int
     name: int
-    addr: "0x10"
+    addr: "0x40010010"
     offset: "0x10"
     doc: Interrupt Register
   timer0.count:
@@ -237,7 +237,7 @@ elements:
     fields: []
     id: timer0.count
     name: count
-    addr: "0x20"
+    addr: "0x40010020"
     offset: "0x20"
     doc: The Counter Register reflects the actual Value of the Timer/Counter
   timer0.match:
@@ -245,7 +245,7 @@ elements:
     fields: []
     id: timer0.match
     name: match
-    addr: "0x24"
+    addr: "0x40010024"
     offset: "0x24"
     doc: The Match Register stores the compare Value for the MATCH condition
   timer0.prescale_rd:
@@ -253,7 +253,7 @@ elements:
     fields: []
     id: timer0.prescale_rd
     name: prescale_rd
-    addr: "0x28"
+    addr: "0x40010028"
     offset: "0x28"
     doc: The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value
   timer0.prescale_wr:
@@ -261,7 +261,7 @@ elements:
     fields: []
     id: timer0.prescale_wr
     name: prescale_wr
-    addr: "0x28"
+    addr: "0x40010028"
     offset: "0x28"
     doc: The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value
   "timer0.reload[0]":
@@ -269,7 +269,7 @@ elements:
     fields: []
     id: "timer0.reload[0]"
     name: "reload[0]"
-    addr: "0x50"
+    addr: "0x40010050"
     offset: "0x50"
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
   "timer0.reload[1]":
@@ -277,7 +277,7 @@ elements:
     fields: []
     id: "timer0.reload[1]"
     name: "reload[1]"
-    addr: "0x54"
+    addr: "0x40010054"
     offset: "0x54"
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
   "timer0.reload[2]":
@@ -285,7 +285,7 @@ elements:
     fields: []
     id: "timer0.reload[2]"
     name: "reload[2]"
-    addr: "0x58"
+    addr: "0x40010058"
     offset: "0x58"
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
   "timer0.reload[3]":
@@ -293,7 +293,7 @@ elements:
     fields: []
     id: "timer0.reload[3]"
     name: "reload[3]"
-    addr: "0x5c"
+    addr: "0x4001005c"
     offset: "0x5c"
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
   timer1:

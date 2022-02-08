@@ -95,6 +95,7 @@ impl From<svd::Device> for Rdf {
 fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<String, Element>) {
     let name = peripheral.name.to_lowercase();
     let path = name.clone();
+    let base_address: u32 = peripheral.base_address.try_into().unwrap();
 
     let mut children = Vec::new();
     peripheral_child_ids(&path, &peripheral, &mut children);
@@ -115,7 +116,7 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
             match register_cluster {
                 svd::RegisterCluster::Register(register) => match register {
                     svd::MaybeArray::Single(register) => {
-                        visit_register(&path, register, elements)
+                        visit_register(&path, base_address, register, elements)
                     }
                     svd::MaybeArray::Array(register, dim) => {
                         let name = register.name.to_lowercase();
@@ -131,16 +132,13 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
                                 name: child_name,
                                 addr: format!(
                                     "0x{:x}",
+                                    base_address + register.address_offset + i * dim.dim_increment
+                                ),
+                                offset: format!(
+                                    "0x{:x}",
                                     register.address_offset + i * dim.dim_increment
-                                    ),
-                                    offset: format!(
-                                        "0x{:x}",
-                                        register.address_offset + i * dim.dim_increment
-                                        ),
-                                        doc: register
-                                            .description
-                                            .clone()
-                                            .unwrap_or_else(String::new),
+                                ),
+                                doc: register.description.clone().unwrap_or_else(String::new),
                             };
 
                             elements.insert(element.id.clone(), element);
@@ -266,6 +264,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
 
 fn visit_register(
     path: &str,
+    base_address: u32,
     register: svd::RegisterInfo,
     elements: &mut IndexMap<String, Element>,
 ) {
@@ -276,7 +275,7 @@ fn visit_register(
         typ: ElementType::Reg { fields },
         id: format!("{}.{}", path, name),
         name,
-        addr: format!("0x{:x}", register.address_offset),
+        addr: format!("0x{:x}", base_address + register.address_offset),
         offset: format!("0x{:x}", register.address_offset),
         doc: register.description.unwrap_or_else(String::new),
     };

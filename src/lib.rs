@@ -119,6 +119,25 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
                             visit_register(&path, register, elements)
                         }
                         svd::MaybeArray::Array(register, dim) => {
+                            let name = register.name.to_lowercase();
+                            for i in 0..dim.dim {
+                                let child_name = name.replace("%s", &i.to_string());
+                                let child_id = format!("{}.{}", path, child_name);
+
+                                let mut fields = Vec::new();
+                                collect_fields(&register, &mut fields);
+
+                                let element = Element {
+                                    typ: ElementType::Reg { fields },
+                                    id: child_id,
+                                    name: child_name,
+                                    addr: format!("0x{:x}", register.address_offset + i * dim.dim_increment),
+                                    offset: format!("0x{:x}", register.address_offset + i * dim.dim_increment),
+                                    doc: register.description.clone().unwrap_or_else(|| "undefined".to_string()),
+                                };
+
+                                elements.insert(element.id.clone(), element);
+                            }
                         }
                     }
                     svd::RegisterCluster::Cluster(_cluster) => unimplemented!(),

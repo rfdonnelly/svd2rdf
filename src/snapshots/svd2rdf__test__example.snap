@@ -1,6 +1,6 @@
 ---
 source: src/lib.rs
-assertion_line: 208
+assertion_line: 237
 expression: rdf
 
 ---
@@ -210,6 +210,38 @@ elements:
     addr: "0x28"
     offset: "0x28"
     doc: The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value
+  "timer0.reload[0]":
+    type: reg
+    fields: []
+    id: "timer0.reload[0]"
+    name: "reload[0]"
+    addr: "0x50"
+    offset: "0x50"
+    doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
+  "timer0.reload[1]":
+    type: reg
+    fields: []
+    id: "timer0.reload[1]"
+    name: "reload[1]"
+    addr: "0x54"
+    offset: "0x54"
+    doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
+  "timer0.reload[2]":
+    type: reg
+    fields: []
+    id: "timer0.reload[2]"
+    name: "reload[2]"
+    addr: "0x58"
+    offset: "0x58"
+    doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
+  "timer0.reload[3]":
+    type: reg
+    fields: []
+    id: "timer0.reload[3]"
+    name: "reload[3]"
+    addr: "0x5c"
+    offset: "0x5c"
+    doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
   timer1:
     type: blk
     children: []

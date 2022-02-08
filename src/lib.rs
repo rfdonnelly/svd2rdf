@@ -105,7 +105,7 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
         name,
         addr: format!("0x{:x}", peripheral.base_address),
         offset: format!("0x{:x}", peripheral.base_address),
-        doc: peripheral.description.unwrap_or_else(|| "undefined".to_string()),
+        doc: peripheral.description.unwrap_or_else(|| String::new()),
     };
 
     elements.insert(element.id.clone(), element);
@@ -132,7 +132,7 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
                                     name: child_name,
                                     addr: format!("0x{:x}", register.address_offset + i * dim.dim_increment),
                                     offset: format!("0x{:x}", register.address_offset + i * dim.dim_increment),
-                                    doc: register.description.clone().unwrap_or_else(|| "undefined".to_string()),
+                                    doc: register.description.clone().unwrap_or_else(|| String::new()),
                                 };
 
                                 elements.insert(element.id.clone(), element);
@@ -184,7 +184,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
 
                         let access = match field.access {
                             Some(access) => access.as_str().to_string(),
-                            None => "undefined".to_string(),
+                            None => String::new(),
                         };
 
                         let field = Field {
@@ -193,7 +193,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
                             nbits: field.bit_range.width,
                             access,
                             reset: "0x0".into(),
-                            doc: field.description.clone().unwrap_or_else(|| "undefined".to_string()),
+                            doc: field.description.clone().unwrap_or_else(|| String::new()),
                         };
 
                         fields.push(field);
@@ -268,7 +268,7 @@ fn visit_register(path: &str, register: svd::RegisterInfo, elements: &mut IndexM
         name,
         addr: format!("0x{:x}", register.address_offset),
         offset: format!("0x{:x}", register.address_offset),
-        doc: register.description.unwrap_or_else(|| "undefined".to_string()),
+        doc: register.description.unwrap_or_else(|| String::new()),
     };
 
     elements.insert(element.id.clone(), element);

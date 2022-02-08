@@ -244,7 +244,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
             name: format!("rsvd{i}"),
             lsb,
             nbits: msb - lsb + 1,
-            access: "read-zero".to_string(),
+            access: "rsvd".to_string(),
             reset: "0x0".to_string(),
             doc: "Reserved".to_string(),
         })

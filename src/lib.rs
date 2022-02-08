@@ -192,7 +192,7 @@ fn collect_fields(register: &svd::RegisterInfo, fields: &mut Vec<Field>) {
                             nbits: field.bit_range.width,
                             access,
                             reset: "0x0".into(),
-                            doc: "TODO".into(),
+                            doc: field.description.clone().unwrap_or_else(|| "undefined".to_string()),
                         };
 
                         fields.push(field);

@@ -42,73 +42,73 @@ elements:
         nbits: 1
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Enable
       - name: rst
         lsb: 1
         nbits: 1
         access: write-only
         reset: "0x0"
-        doc: TODO
+        doc: Reset Timer
       - name: cnt
         lsb: 2
         nbits: 2
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Counting direction
       - name: mode
         lsb: 4
         nbits: 3
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Operation Mode
       - name: psc
         lsb: 7
         nbits: 1
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Use Prescaler
       - name: cntsrc
         lsb: 8
         nbits: 4
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Timer / Counter Source Divider
       - name: capsrc
         lsb: 12
         nbits: 4
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Timer / Counter Capture Source
       - name: capedge
         lsb: 16
         nbits: 2
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: "Capture Edge, select which Edge should result in a counter increment or decrement"
       - name: trgext
         lsb: 20
         nbits: 2
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Triggers an other Peripheral
       - name: reload
         lsb: 24
         nbits: 2
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Select RELOAD Register n to reload Timer on condition
       - name: idr
         lsb: 26
         nbits: 2
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: "Selects, if Reload Register number is incremented, decremented or not modified"
       - name: s
         lsb: 31
         nbits: 1
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Starts and Stops the Timer / Counter
     id: timer0.cr
     name: cr
     addr: "0x0"
@@ -122,37 +122,37 @@ elements:
         nbits: 1
         access: read-only
         reset: "0x0"
-        doc: TODO
+        doc: Shows if Timer is running or not
       - name: match
         lsb: 8
         nbits: 1
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Shows if the MATCH was hit
       - name: un
         lsb: 9
         nbits: 1
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Shows if an underflow occured. This flag is sticky
       - name: ov
         lsb: 10
         nbits: 1
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Shows if an overflow occured. This flag is sticky
       - name: rst
         lsb: 12
         nbits: 1
         access: read-only
         reset: "0x0"
-        doc: TODO
+        doc: Shows if Timer is in RESET state
       - name: reload
         lsb: 14
         nbits: 2
         access: read-only
         reset: "0x0"
-        doc: TODO
+        doc: Shows the currently active RELOAD Register
     id: timer0.sr
     name: sr
     addr: "0x4"
@@ -166,13 +166,13 @@ elements:
         nbits: 1
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: Interrupt Enable
       - name: mode
         lsb: 4
         nbits: 3
         access: read-write
         reset: "0x0"
-        doc: TODO
+        doc: "Interrupt Mode, selects on which condition the Timer should generate an Interrupt"
     id: timer0.int
     name: int
     addr: "0x10"

@@ -130,15 +130,24 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
                                     typ: ElementType::Reg { fields },
                                     id: child_id,
                                     name: child_name,
-                                    addr: format!("0x{:x}", register.address_offset + i * dim.dim_increment),
-                                    offset: format!("0x{:x}", register.address_offset + i * dim.dim_increment),
-                                    doc: register.description.clone().unwrap_or_else(|| String::new()),
+                                    addr: format!(
+                                        "0x{:x}",
+                                        register.address_offset + i * dim.dim_increment
+                                    ),
+                                    offset: format!(
+                                        "0x{:x}",
+                                        register.address_offset + i * dim.dim_increment
+                                    ),
+                                    doc: register
+                                        .description
+                                        .clone()
+                                        .unwrap_or_else(|| String::new()),
                                 };
 
                                 elements.insert(element.id.clone(), element);
                             }
                         }
-                    }
+                    },
                     svd::RegisterCluster::Cluster(_cluster) => unimplemented!(),
                 }
             }
@@ -204,7 +213,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
                 }
             }
         }
-        None => {},
+        None => {}
     }
 
     fields.sort_by_key(|field| field.lsb);
@@ -258,7 +267,11 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
     fields
 }
 
-fn visit_register(path: &str, register: svd::RegisterInfo, elements: &mut IndexMap<String, Element>) {
+fn visit_register(
+    path: &str,
+    register: svd::RegisterInfo,
+    elements: &mut IndexMap<String, Element>,
+) {
     let fields = collect_fields(&register);
 
     let name = register.name.to_lowercase();
@@ -280,7 +293,10 @@ mod test {
 
     #[test]
     fn example() {
-        let svd = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/input/example.svd"));
+        let svd = include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/input/example.svd"
+        ));
         let device = svd_parser::parse(svd).unwrap();
         let rdf = Rdf::from(device);
 

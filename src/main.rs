@@ -7,7 +7,7 @@ use svd_parser;
 #[clap(about, version, author)]
 struct Args {
     /// The SVD file to convert.
-    file: String
+    file: String,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

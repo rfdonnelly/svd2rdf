@@ -46,7 +46,7 @@ elements:
       - name: rsvd2
         lsb: 28
         nbits: 3
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: idr
@@ -64,7 +64,7 @@ elements:
       - name: rsvd1
         lsb: 22
         nbits: 2
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: trgext
@@ -76,7 +76,7 @@ elements:
       - name: rsvd0
         lsb: 18
         nbits: 2
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: capedge
@@ -138,7 +138,7 @@ elements:
       - name: rsvd3
         lsb: 16
         nbits: 16
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: reload
@@ -150,7 +150,7 @@ elements:
       - name: rsvd2
         lsb: 13
         nbits: 1
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: rst
@@ -162,7 +162,7 @@ elements:
       - name: rsvd1
         lsb: 11
         nbits: 1
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: ov
@@ -186,7 +186,7 @@ elements:
       - name: rsvd0
         lsb: 1
         nbits: 7
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: run
@@ -206,7 +206,7 @@ elements:
       - name: rsvd1
         lsb: 7
         nbits: 25
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: mode
@@ -218,7 +218,7 @@ elements:
       - name: rsvd0
         lsb: 1
         nbits: 3
-        access: read-zero
+        access: rsvd
         reset: "0x0"
         doc: Reserved
       - name: en
@@ -303,7 +303,7 @@ elements:
     name: timer1
     addr: "0x40010100"
     offset: "0x40010100"
-    doc: undefined
+    doc: ""
   timer2:
     type: blk
     children: []
@@ -311,5 +311,5 @@ elements:
     name: timer2
     addr: "0x40010200"
     offset: "0x40010200"
-    doc: undefined
+    doc: ""
 

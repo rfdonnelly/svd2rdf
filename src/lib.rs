@@ -208,6 +208,51 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
     }
 
     fields.sort_by_key(|field| field.lsb);
+
+    let mut holes: Vec<(u32, u32)> = fields
+        .windows(2)
+        .filter_map(|slice| {
+            let lsb = slice[0].lsb + slice[0].nbits;
+            let msb = slice[1].lsb - 1;
+            if msb < lsb {
+                None
+            } else {
+                Some((lsb, msb))
+            }
+        })
+        .collect();
+
+    if let Some(first) = fields.first() {
+        if first.lsb != 0 {
+            let (lsb, msb) = (0, first.lsb - 1);
+            holes.push((lsb, msb));
+        }
+    }
+
+    if let Some(last) = fields.last() {
+        let msb = last.lsb + last.nbits - 1;
+        if msb < 31 {
+            let (lsb, msb) = (msb + 1, 31);
+            holes.push((lsb, msb));
+        }
+    }
+
+    let mut rsvd_fields = holes
+        .into_iter()
+        .enumerate()
+        .map(|(i, (lsb, msb))| Field {
+            name: format!("rsvd{i}"),
+            lsb,
+            nbits: msb - lsb + 1,
+            access: "read-zero".to_string(),
+            reset: "0x0".to_string(),
+            doc: "Reserved".to_string(),
+        })
+        .collect();
+
+    fields.append(&mut rsvd_fields);
+
+    fields.sort_by_key(|field| field.lsb);
     fields.reverse();
 
     fields

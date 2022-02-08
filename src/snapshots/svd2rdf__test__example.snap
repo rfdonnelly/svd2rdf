@@ -1,6 +1,6 @@
 ---
 source: src/lib.rs
-assertion_line: 237
+assertion_line: 287
 expression: rdf
 
 ---
@@ -37,78 +37,96 @@ elements:
   timer0.cr:
     type: reg
     fields:
-      - name: en
-        lsb: 0
-        nbits: 1
-        access: read-write
-        reset: "0x0"
-        doc: Enable
-      - name: rst
-        lsb: 1
-        nbits: 1
-        access: write-only
-        reset: "0x0"
-        doc: Reset Timer
-      - name: cnt
-        lsb: 2
-        nbits: 2
-        access: read-write
-        reset: "0x0"
-        doc: Counting direction
-      - name: mode
-        lsb: 4
-        nbits: 3
-        access: read-write
-        reset: "0x0"
-        doc: Operation Mode
-      - name: psc
-        lsb: 7
-        nbits: 1
-        access: read-write
-        reset: "0x0"
-        doc: Use Prescaler
-      - name: cntsrc
-        lsb: 8
-        nbits: 4
-        access: read-write
-        reset: "0x0"
-        doc: Timer / Counter Source Divider
-      - name: capsrc
-        lsb: 12
-        nbits: 4
-        access: read-write
-        reset: "0x0"
-        doc: Timer / Counter Capture Source
-      - name: capedge
-        lsb: 16
-        nbits: 2
-        access: read-write
-        reset: "0x0"
-        doc: "Capture Edge, select which Edge should result in a counter increment or decrement"
-      - name: trgext
-        lsb: 20
-        nbits: 2
-        access: read-write
-        reset: "0x0"
-        doc: Triggers an other Peripheral
-      - name: reload
-        lsb: 24
-        nbits: 2
-        access: read-write
-        reset: "0x0"
-        doc: Select RELOAD Register n to reload Timer on condition
-      - name: idr
-        lsb: 26
-        nbits: 2
-        access: read-write
-        reset: "0x0"
-        doc: "Selects, if Reload Register number is incremented, decremented or not modified"
       - name: s
         lsb: 31
         nbits: 1
         access: read-write
         reset: "0x0"
         doc: Starts and Stops the Timer / Counter
+      - name: rsvd2
+        lsb: 28
+        nbits: 3
+        access: read-zero
+        reset: "0x0"
+        doc: Reserved
+      - name: idr
+        lsb: 26
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+        doc: "Selects, if Reload Register number is incremented, decremented or not modified"
+      - name: reload
+        lsb: 24
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+        doc: Select RELOAD Register n to reload Timer on condition
+      - name: rsvd1
+        lsb: 22
+        nbits: 2
+        access: read-zero
+        reset: "0x0"
+        doc: Reserved
+      - name: trgext
+        lsb: 20
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+        doc: Triggers an other Peripheral
+      - name: rsvd0
+        lsb: 18
+        nbits: 2
+        access: read-zero
+        reset: "0x0"
+        doc: Reserved
+      - name: capedge
+        lsb: 16
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+        doc: "Capture Edge, select which Edge should result in a counter increment or decrement"
+      - name: capsrc
+        lsb: 12
+        nbits: 4
+        access: read-write
+        reset: "0x0"
+        doc: Timer / Counter Capture Source
+      - name: cntsrc
+        lsb: 8
+        nbits: 4
+        access: read-write
+        reset: "0x0"
+        doc: Timer / Counter Source Divider
+      - name: psc
+        lsb: 7
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+        doc: Use Prescaler
+      - name: mode
+        lsb: 4
+        nbits: 3
+        access: read-write
+        reset: "0x0"
+        doc: Operation Mode
+      - name: cnt
+        lsb: 2
+        nbits: 2
+        access: read-write
+        reset: "0x0"
+        doc: Counting direction
+      - name: rst
+        lsb: 1
+        nbits: 1
+        access: write-only
+        reset: "0x0"
+        doc: Reset Timer
+      - name: en
+        lsb: 0
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+        doc: Enable
     id: timer0.cr
     name: cr
     addr: "0x0"
@@ -117,42 +135,66 @@ elements:
   timer0.sr:
     type: reg
     fields:
-      - name: run
-        lsb: 0
-        nbits: 1
-        access: read-only
+      - name: rsvd3
+        lsb: 16
+        nbits: 16
+        access: read-zero
         reset: "0x0"
-        doc: Shows if Timer is running or not
-      - name: match
-        lsb: 8
-        nbits: 1
-        access: read-write
-        reset: "0x0"
-        doc: Shows if the MATCH was hit
-      - name: un
-        lsb: 9
-        nbits: 1
-        access: read-write
-        reset: "0x0"
-        doc: Shows if an underflow occured. This flag is sticky
-      - name: ov
-        lsb: 10
-        nbits: 1
-        access: read-write
-        reset: "0x0"
-        doc: Shows if an overflow occured. This flag is sticky
-      - name: rst
-        lsb: 12
-        nbits: 1
-        access: read-only
-        reset: "0x0"
-        doc: Shows if Timer is in RESET state
+        doc: Reserved
       - name: reload
         lsb: 14
         nbits: 2
         access: read-only
         reset: "0x0"
         doc: Shows the currently active RELOAD Register
+      - name: rsvd2
+        lsb: 13
+        nbits: 1
+        access: read-zero
+        reset: "0x0"
+        doc: Reserved
+      - name: rst
+        lsb: 12
+        nbits: 1
+        access: read-only
+        reset: "0x0"
+        doc: Shows if Timer is in RESET state
+      - name: rsvd1
+        lsb: 11
+        nbits: 1
+        access: read-zero
+        reset: "0x0"
+        doc: Reserved
+      - name: ov
+        lsb: 10
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+        doc: Shows if an overflow occured. This flag is sticky
+      - name: un
+        lsb: 9
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+        doc: Shows if an underflow occured. This flag is sticky
+      - name: match
+        lsb: 8
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+        doc: Shows if the MATCH was hit
+      - name: rsvd0
+        lsb: 1
+        nbits: 7
+        access: read-zero
+        reset: "0x0"
+        doc: Reserved
+      - name: run
+        lsb: 0
+        nbits: 1
+        access: read-only
+        reset: "0x0"
+        doc: Shows if Timer is running or not
     id: timer0.sr
     name: sr
     addr: "0x4"
@@ -161,18 +203,30 @@ elements:
   timer0.int:
     type: reg
     fields:
-      - name: en
-        lsb: 0
-        nbits: 1
-        access: read-write
+      - name: rsvd1
+        lsb: 7
+        nbits: 25
+        access: read-zero
         reset: "0x0"
-        doc: Interrupt Enable
+        doc: Reserved
       - name: mode
         lsb: 4
         nbits: 3
         access: read-write
         reset: "0x0"
         doc: "Interrupt Mode, selects on which condition the Timer should generate an Interrupt"
+      - name: rsvd0
+        lsb: 1
+        nbits: 3
+        access: read-zero
+        reset: "0x0"
+        doc: Reserved
+      - name: en
+        lsb: 0
+        nbits: 1
+        access: read-write
+        reset: "0x0"
+        doc: Interrupt Enable
     id: timer0.int
     name: int
     addr: "0x10"

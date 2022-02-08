@@ -162,11 +162,16 @@ fn collect_fields(register: &svd::RegisterInfo, fields: &mut Vec<Field>) {
                     svd::MaybeArray::Single(field) => {
                         let name = field.name.to_lowercase();
 
+                        let access = match field.access {
+                            Some(access) => access.as_str().to_string(),
+                            None => "undefined".to_string(),
+                        };
+
                         let field = Field {
                             name,
                             lsb: field.bit_range.offset,
                             nbits: field.bit_range.width,
-                            access: field.access.unwrap().as_str().to_string(),
+                            access,
                             reset: "0x0".into(),
                             doc: "TODO".into(),
                         };

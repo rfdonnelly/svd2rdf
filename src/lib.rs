@@ -143,8 +143,8 @@ fn peripheral_child_ids(path: &str, peripheral: &svd::PeripheralInfo, child_ids:
                         let name = register.name.to_lowercase();
                         for i in 0..dim.dim {
                             let child_name = name.replace("%s", &i.to_string());
-                            let child_path = format!("{}.{}", path, child_name);
-                            child_ids.push(child_path);
+                            let child_id = format!("{}.{}", path, child_name);
+                            child_ids.push(child_id);
                         }
                     }
                 },

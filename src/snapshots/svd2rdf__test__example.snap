@@ -33,6 +33,7 @@ elements:
     name: timer0
     addr: "0x40010000"
     offset: "0x40010000"
+    doc: "32 Timer / Counter, counting up or down from different sources"
   timer0.cr:
     type: reg
     fields:
@@ -41,65 +42,78 @@ elements:
         nbits: 1
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: rst
         lsb: 1
         nbits: 1
         access: write-only
         reset: "0x0"
+        doc: TODO
       - name: cnt
         lsb: 2
         nbits: 2
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: mode
         lsb: 4
         nbits: 3
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: psc
         lsb: 7
         nbits: 1
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: cntsrc
         lsb: 8
         nbits: 4
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: capsrc
         lsb: 12
         nbits: 4
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: capedge
         lsb: 16
         nbits: 2
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: trgext
         lsb: 20
         nbits: 2
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: reload
         lsb: 24
         nbits: 2
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: idr
         lsb: 26
         nbits: 2
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: s
         lsb: 31
         nbits: 1
         access: read-write
         reset: "0x0"
+        doc: TODO
     id: timer0.cr
     name: cr
     addr: "0x0"
     offset: "0x0"
+    doc: Control Register
   timer0.sr:
     type: reg
     fields:
@@ -108,35 +122,42 @@ elements:
         nbits: 1
         access: read-only
         reset: "0x0"
+        doc: TODO
       - name: match
         lsb: 8
         nbits: 1
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: un
         lsb: 9
         nbits: 1
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: ov
         lsb: 10
         nbits: 1
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: rst
         lsb: 12
         nbits: 1
         access: read-only
         reset: "0x0"
+        doc: TODO
       - name: reload
         lsb: 14
         nbits: 2
         access: read-only
         reset: "0x0"
+        doc: TODO
     id: timer0.sr
     name: sr
     addr: "0x4"
     offset: "0x4"
+    doc: Status Register
   timer0.int:
     type: reg
     fields:
@@ -145,15 +166,18 @@ elements:
         nbits: 1
         access: read-write
         reset: "0x0"
+        doc: TODO
       - name: mode
         lsb: 4
         nbits: 3
         access: read-write
         reset: "0x0"
+        doc: TODO
     id: timer0.int
     name: int
     addr: "0x10"
     offset: "0x10"
+    doc: Interrupt Register
   timer0.count:
     type: reg
     fields: []
@@ -161,6 +185,7 @@ elements:
     name: count
     addr: "0x20"
     offset: "0x20"
+    doc: The Counter Register reflects the actual Value of the Timer/Counter
   timer0.match:
     type: reg
     fields: []
@@ -168,6 +193,7 @@ elements:
     name: match
     addr: "0x24"
     offset: "0x24"
+    doc: The Match Register stores the compare Value for the MATCH condition
   timer0.prescale_rd:
     type: reg
     fields: []
@@ -175,6 +201,7 @@ elements:
     name: prescale_rd
     addr: "0x28"
     offset: "0x28"
+    doc: The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value
   timer0.prescale_wr:
     type: reg
     fields: []
@@ -182,6 +209,7 @@ elements:
     name: prescale_wr
     addr: "0x28"
     offset: "0x28"
+    doc: The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value
   timer1:
     type: blk
     children: []
@@ -189,6 +217,7 @@ elements:
     name: timer1
     addr: "0x40010100"
     offset: "0x40010100"
+    doc: undefined
   timer2:
     type: blk
     children: []
@@ -196,4 +225,5 @@ elements:
     name: timer2
     addr: "0x40010200"
     offset: "0x40010200"
+    doc: undefined
 

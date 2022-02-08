@@ -34,6 +34,7 @@ struct Element {
     name: String,
     addr: String,
     offset: String,
+    doc: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -54,6 +55,7 @@ struct Field {
     nbits: u32,
     access: String,
     reset: String,
+    doc: String,
 }
 
 impl From<svd::Device> for Rdf {
@@ -103,6 +105,7 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
         name,
         addr: format!("0x{:x}", peripheral.base_address),
         offset: format!("0x{:x}", peripheral.base_address),
+        doc: peripheral.description.unwrap_or_else(|| "undefined".to_string()),
     };
 
     elements.insert(element.id.clone(), element);
@@ -165,6 +168,7 @@ fn collect_fields(register: &svd::RegisterInfo, fields: &mut Vec<Field>) {
                             nbits: field.bit_range.width,
                             access: field.access.unwrap().as_str().to_string(),
                             reset: "0x0".into(),
+                            doc: "TODO".into(),
                         };
 
                         fields.push(field);
@@ -190,6 +194,7 @@ fn visit_register(path: &str, register: svd::RegisterInfo, elements: &mut IndexM
         name,
         addr: format!("0x{:x}", register.address_offset),
         offset: format!("0x{:x}", register.address_offset),
+        doc: register.description.unwrap_or_else(|| "undefined".to_string()),
     };
 
     elements.insert(element.id.clone(), element);

@@ -105,54 +105,51 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
         name,
         addr: format!("0x{:x}", peripheral.base_address),
         offset: format!("0x{:x}", peripheral.base_address),
-        doc: peripheral.description.unwrap_or_else(|| String::new()),
+        doc: peripheral.description.unwrap_or_else(String::new),
     };
 
     elements.insert(element.id.clone(), element);
 
-    match peripheral.registers {
-        Some(register_clusters) => {
-            for register_cluster in register_clusters {
-                match register_cluster {
-                    svd::RegisterCluster::Register(register) => match register {
-                        svd::MaybeArray::Single(register) => {
-                            visit_register(&path, register, elements)
-                        }
-                        svd::MaybeArray::Array(register, dim) => {
-                            let name = register.name.to_lowercase();
-                            for i in 0..dim.dim {
-                                let child_name = name.replace("%s", &i.to_string());
-                                let child_id = format!("{}.{}", path, child_name);
+    if let Some(register_clusters) = peripheral.registers {
+        for register_cluster in register_clusters {
+            match register_cluster {
+                svd::RegisterCluster::Register(register) => match register {
+                    svd::MaybeArray::Single(register) => {
+                        visit_register(&path, register, elements)
+                    }
+                    svd::MaybeArray::Array(register, dim) => {
+                        let name = register.name.to_lowercase();
+                        for i in 0..dim.dim {
+                            let child_name = name.replace("%s", &i.to_string());
+                            let child_id = format!("{}.{}", path, child_name);
 
-                                let fields = collect_fields(&register);
+                            let fields = collect_fields(&register);
 
-                                let element = Element {
-                                    typ: ElementType::Reg { fields },
-                                    id: child_id,
-                                    name: child_name,
-                                    addr: format!(
-                                        "0x{:x}",
-                                        register.address_offset + i * dim.dim_increment
+                            let element = Element {
+                                typ: ElementType::Reg { fields },
+                                id: child_id,
+                                name: child_name,
+                                addr: format!(
+                                    "0x{:x}",
+                                    register.address_offset + i * dim.dim_increment
                                     ),
                                     offset: format!(
                                         "0x{:x}",
                                         register.address_offset + i * dim.dim_increment
-                                    ),
-                                    doc: register
-                                        .description
-                                        .clone()
-                                        .unwrap_or_else(|| String::new()),
-                                };
+                                        ),
+                                        doc: register
+                                            .description
+                                            .clone()
+                                            .unwrap_or_else(String::new),
+                            };
 
-                                elements.insert(element.id.clone(), element);
-                            }
+                            elements.insert(element.id.clone(), element);
                         }
-                    },
-                    svd::RegisterCluster::Cluster(_cluster) => unimplemented!(),
-                }
+                    }
+                },
+                svd::RegisterCluster::Cluster(_cluster) => unimplemented!(),
             }
         }
-        None => {}
     }
 }
 
@@ -202,12 +199,12 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
                             nbits: field.bit_range.width,
                             access,
                             reset: "0x0".into(),
-                            doc: field.description.clone().unwrap_or_else(|| String::new()),
+                            doc: field.description.clone().unwrap_or_else(String::new),
                         };
 
                         fields.push(field);
                     }
-                    svd::MaybeArray::Array(field, dim) => {
+                    svd::MaybeArray::Array(_field, _dim) => {
                         todo!();
                     }
                 }
@@ -281,7 +278,7 @@ fn visit_register(
         name,
         addr: format!("0x{:x}", register.address_offset),
         offset: format!("0x{:x}", register.address_offset),
-        doc: register.description.unwrap_or_else(|| String::new()),
+        doc: register.description.unwrap_or_else(String::new),
     };
 
     elements.insert(element.id.clone(), element);

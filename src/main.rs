@@ -1,7 +1,6 @@
 use svd2rdf::Rdf;
 
 use clap::Parser;
-use svd_parser;
 
 #[derive(Parser)]
 #[clap(about, version, author)]

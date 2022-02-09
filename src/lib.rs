@@ -48,7 +48,7 @@ enum ElementType {
     Mem,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct Field {
     name: String,
     lsb: u32,
@@ -116,34 +116,16 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
             match register_cluster {
                 svd::RegisterCluster::Register(register) => match register {
                     svd::MaybeArray::Single(register) => {
-                        visit_register(&path, base_address, register, elements)
+                        visit_register(&path, base_address, register, 1, None, elements)
                     }
-                    svd::MaybeArray::Array(register, dim) => {
-                        let name = register.name.to_lowercase();
-                        for i in 0..dim.dim {
-                            let child_name = name.replace("%s", &i.to_string());
-                            let child_id = format!("{}.{}", path, child_name);
-
-                            let fields = collect_fields(&register);
-
-                            let element = Element {
-                                typ: ElementType::Reg { fields },
-                                id: child_id,
-                                name: child_name,
-                                addr: format!(
-                                    "0x{:x}",
-                                    base_address + register.address_offset + i * dim.dim_increment
-                                ),
-                                offset: format!(
-                                    "0x{:x}",
-                                    register.address_offset + i * dim.dim_increment
-                                ),
-                                doc: register.description.clone().unwrap_or_else(String::new),
-                            };
-
-                            elements.insert(element.id.clone(), element);
-                        }
-                    }
+                    svd::MaybeArray::Array(register, dim) => visit_register(
+                        &path,
+                        base_address,
+                        register,
+                        dim.dim,
+                        Some(dim.dim_increment),
+                        elements,
+                    ),
                 },
                 svd::RegisterCluster::Cluster(_cluster) => unimplemented!(),
             }
@@ -278,21 +260,36 @@ fn visit_register(
     path: &str,
     base_address: u32,
     register: svd::RegisterInfo,
+    instance_count: u32,
+    address_increment: Option<u32>,
     elements: &mut IndexMap<String, Element>,
 ) {
     let fields = collect_fields(&register);
 
     let name = register.name.to_lowercase();
-    let element = Element {
-        typ: ElementType::Reg { fields },
-        id: format!("{}.{}", path, name),
-        name,
-        addr: format!("0x{:x}", base_address + register.address_offset),
-        offset: format!("0x{:x}", register.address_offset),
-        doc: register.description.unwrap_or_else(String::new),
-    };
+    for i in 0..instance_count {
+        let child_name = name.replace("%s", &i.to_string());
+        let child_id = format!("{}.{}", path, child_name);
 
-    elements.insert(element.id.clone(), element);
+        let element = Element {
+            typ: ElementType::Reg {
+                fields: fields.clone(),
+            },
+            id: child_id,
+            name: child_name,
+            addr: format!(
+                "0x{:x}",
+                base_address + register.address_offset + i * address_increment.unwrap_or_default()
+            ),
+            offset: format!(
+                "0x{:x}",
+                register.address_offset + i * address_increment.unwrap_or_default()
+            ),
+            doc: register.description.clone().unwrap_or_else(String::new),
+        };
+
+        elements.insert(element.id.clone(), element);
+    }
 }
 
 #[cfg(test)]

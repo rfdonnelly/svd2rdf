@@ -97,12 +97,11 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
     let path = name.clone();
     let base_address: u32 = peripheral.base_address.try_into().unwrap();
 
-    let mut children = Vec::new();
-    peripheral_child_ids(&path, &peripheral, &mut children);
+    let children = peripheral_child_ids(&path, &peripheral);
 
     let element = Element {
         typ: ElementType::Blk { children },
-        id: name.clone(),
+        id: path.clone(),
         name,
         addr: format!("0x{:x}", peripheral.base_address),
         offset: format!("0x{:x}", peripheral.base_address),
@@ -112,50 +111,156 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
     elements.insert(element.id.clone(), element);
 
     if let Some(register_clusters) = peripheral.registers {
-        for register_cluster in register_clusters {
-            match register_cluster {
-                svd::RegisterCluster::Register(register) => match register {
-                    svd::MaybeArray::Single(register) => {
-                        visit_register(&path, base_address, register, 1, None, elements)
-                    }
-                    svd::MaybeArray::Array(register, dim) => visit_register(
-                        &path,
-                        base_address,
-                        register,
-                        dim.dim,
-                        Some(dim.dim_increment),
-                        elements,
-                    ),
-                },
-                svd::RegisterCluster::Cluster(_cluster) => unimplemented!(),
-            }
+        visit_register_clusters(&path, base_address, &register_clusters, elements);
+    }
+}
+
+fn visit_register_clusters(
+    path: &str,
+    base_address: u32,
+    register_clusters: &[svd::RegisterCluster],
+    elements: &mut IndexMap<String, Element>,
+) {
+    for register_cluster in register_clusters {
+        match register_cluster {
+            svd::RegisterCluster::Register(register) => match register {
+                svd::MaybeArray::Single(register) => {
+                    visit_register(path, base_address, register, 1, None, elements)
+                }
+                svd::MaybeArray::Array(register, dim) => visit_register(
+                    path,
+                    base_address,
+                    register,
+                    dim.dim,
+                    Some(dim.dim_increment),
+                    elements,
+                ),
+            },
+            svd::RegisterCluster::Cluster(cluster) => match cluster {
+                svd::MaybeArray::Single(cluster) => {
+                    visit_cluster(path, base_address, cluster, 1, None, elements)
+                }
+                svd::MaybeArray::Array(cluster, dim) => visit_cluster(
+                    path,
+                    base_address,
+                    cluster,
+                    dim.dim,
+                    Some(dim.dim_increment),
+                    elements,
+                ),
+            },
         }
     }
 }
 
-fn peripheral_child_ids(path: &str, peripheral: &svd::PeripheralInfo, child_ids: &mut Vec<String>) {
-    match &peripheral.registers {
-        Some(registers) => registers
+fn visit_cluster(
+    path: &str,
+    base_address: u32,
+    cluster: &svd::ClusterInfo,
+    instance_count: u32,
+    address_increment: Option<u32>,
+    elements: &mut IndexMap<String, Element>,
+) {
+    let name = cluster.name.to_lowercase();
+
+    for i in 0..instance_count {
+        let name = name.replace("%s", &i.to_string());
+        let path = format!("{}.{}", path, name);
+        let children = cluster_child_ids(&path, cluster);
+        let instance_offset = cluster.address_offset + i * address_increment.unwrap_or_default();
+        let element = Element {
+            typ: ElementType::Blk {
+                children: children.clone(),
+            },
+            id: path.clone(),
+            name,
+            addr: format!("0x{:x}", base_address + instance_offset),
+            offset: format!("0x{:x}", instance_offset),
+            doc: cluster.description.clone().unwrap_or_else(String::new),
+        };
+
+        elements.insert(element.id.clone(), element);
+
+        let base_address = base_address + cluster.address_offset;
+        visit_register_clusters(&path, base_address, &cluster.children, elements);
+    }
+}
+
+fn register_ids(path: &str, register: &svd::RegisterInfo, instances: u32, ids: &mut Vec<String>) {
+    let name = register.name.to_lowercase();
+
+    for i in 0..instances {
+        let name = name.replace("%s", &i.to_string());
+        let id = format!("{}.{}", path, name);
+        ids.push(id);
+    }
+}
+
+fn cluster_ids(path: &str, cluster: &svd::ClusterInfo, instances: u32, ids: &mut Vec<String>) {
+    let name = cluster.name.to_lowercase();
+
+    for i in 0..instances {
+        let name = name.replace("%s", &i.to_string());
+        let id = format!("{}.{}", path, name);
+        ids.push(id);
+    }
+}
+
+fn peripheral_child_ids(path: &str, peripheral: &svd::PeripheralInfo) -> Vec<String> {
+    let mut child_ids = Vec::new();
+
+    if let Some(register_clusters) = &peripheral.registers {
+        register_clusters
             .iter()
             .for_each(|register_cluster| match register_cluster {
                 svd::RegisterCluster::Register(register) => match register {
                     svd::MaybeArray::Single(register) => {
-                        let name = register.name.to_lowercase();
-                        child_ids.push(format!("{}.{}", path, name))
+                        register_ids(path, register, 1, &mut child_ids);
                     }
                     svd::MaybeArray::Array(register, dim) => {
-                        let name = register.name.to_lowercase();
-                        for i in 0..dim.dim {
-                            let child_name = name.replace("%s", &i.to_string());
-                            let child_id = format!("{}.{}", path, child_name);
-                            child_ids.push(child_id);
-                        }
+                        register_ids(path, register, dim.dim, &mut child_ids);
                     }
                 },
-                svd::RegisterCluster::Cluster(_cluster) => unimplemented!(),
-            }),
-        None => {}
+                svd::RegisterCluster::Cluster(cluster) => match cluster {
+                    svd::MaybeArray::Single(cluster) => {
+                        cluster_ids(path, cluster, 1, &mut child_ids);
+                    }
+                    svd::MaybeArray::Array(cluster, dim) => {
+                        cluster_ids(path, cluster, dim.dim, &mut child_ids);
+                    }
+                },
+            })
     }
+
+    child_ids
+}
+
+fn cluster_child_ids(path: &str, cluster: &svd::ClusterInfo) -> Vec<String> {
+    let mut child_ids = Vec::new();
+
+    cluster
+        .children
+        .iter()
+        .for_each(|register_cluster| match register_cluster {
+            svd::RegisterCluster::Register(register) => match register {
+                svd::MaybeArray::Single(register) => {
+                    register_ids(path, register, 1, &mut child_ids);
+                }
+                svd::MaybeArray::Array(register, dim) => {
+                    register_ids(path, register, dim.dim, &mut child_ids);
+                }
+            },
+            svd::RegisterCluster::Cluster(cluster) => match cluster {
+                svd::MaybeArray::Single(cluster) => {
+                    cluster_ids(path, cluster, 1, &mut child_ids);
+                }
+                svd::MaybeArray::Array(cluster, dim) => {
+                    cluster_ids(path, cluster, dim.dim, &mut child_ids);
+                }
+            },
+        });
+
+    child_ids
 }
 
 fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
@@ -259,32 +364,27 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
 fn visit_register(
     path: &str,
     base_address: u32,
-    register: svd::RegisterInfo,
+    register: &svd::RegisterInfo,
     instance_count: u32,
     address_increment: Option<u32>,
     elements: &mut IndexMap<String, Element>,
 ) {
-    let fields = collect_fields(&register);
+    let fields = collect_fields(register);
 
     let name = register.name.to_lowercase();
     for i in 0..instance_count {
-        let child_name = name.replace("%s", &i.to_string());
-        let child_id = format!("{}.{}", path, child_name);
+        let name = name.replace("%s", &i.to_string());
+        let id = format!("{}.{}", path, name);
+        let instance_offset = register.address_offset + i * address_increment.unwrap_or_default();
 
         let element = Element {
             typ: ElementType::Reg {
                 fields: fields.clone(),
             },
-            id: child_id,
-            name: child_name,
-            addr: format!(
-                "0x{:x}",
-                base_address + register.address_offset + i * address_increment.unwrap_or_default()
-            ),
-            offset: format!(
-                "0x{:x}",
-                register.address_offset + i * address_increment.unwrap_or_default()
-            ),
+            id,
+            name,
+            addr: format!("0x{:x}", base_address + instance_offset),
+            offset: format!("0x{:x}", instance_offset),
             doc: register.description.clone().unwrap_or_else(String::new),
         };
 

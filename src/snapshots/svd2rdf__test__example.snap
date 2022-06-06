@@ -1,6 +1,6 @@
 ---
 source: src/lib.rs
-assertion_line: 311
+assertion_line: 412
 expression: rdf
 
 ---
@@ -25,10 +25,10 @@ elements:
       - timer0.match
       - timer0.prescale_rd
       - timer0.prescale_wr
-      - "timer0.reload[0]"
-      - "timer0.reload[1]"
-      - "timer0.reload[2]"
-      - "timer0.reload[3]"
+      - timer0.reload0
+      - timer0.reload1
+      - timer0.reload2
+      - timer0.reload3
     id: timer0
     name: timer0
     addr: "0x40010000"
@@ -288,7 +288,7 @@ elements:
     addr: "0x40010028"
     offset: "0x28"
     doc: The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value
-  "timer0.reload[0]":
+  timer0.reload0:
     type: reg
     fields:
       - name: inferred
@@ -297,12 +297,12 @@ elements:
         access: inferred
         reset: "0x0"
         doc: inferred
-    id: "timer0.reload[0]"
-    name: "reload[0]"
+    id: timer0.reload0
+    name: reload0
     addr: "0x40010050"
     offset: "0x50"
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
-  "timer0.reload[1]":
+  timer0.reload1:
     type: reg
     fields:
       - name: inferred
@@ -311,12 +311,12 @@ elements:
         access: inferred
         reset: "0x0"
         doc: inferred
-    id: "timer0.reload[1]"
-    name: "reload[1]"
+    id: timer0.reload1
+    name: reload1
     addr: "0x40010054"
     offset: "0x54"
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
-  "timer0.reload[2]":
+  timer0.reload2:
     type: reg
     fields:
       - name: inferred
@@ -325,12 +325,12 @@ elements:
         access: inferred
         reset: "0x0"
         doc: inferred
-    id: "timer0.reload[2]"
-    name: "reload[2]"
+    id: timer0.reload2
+    name: reload2
     addr: "0x40010058"
     offset: "0x58"
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.
-  "timer0.reload[3]":
+  timer0.reload3:
     type: reg
     fields:
       - name: inferred
@@ -339,8 +339,8 @@ elements:
         access: inferred
         reset: "0x0"
         doc: inferred
-    id: "timer0.reload[3]"
-    name: "reload[3]"
+    id: timer0.reload3
+    name: reload3
     addr: "0x4001005c"
     offset: "0x5c"
     doc: The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.

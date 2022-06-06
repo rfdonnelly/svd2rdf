@@ -164,7 +164,7 @@ fn visit_cluster(
     let name = cluster.name.to_lowercase();
 
     for i in 0..instance_count {
-        let name = name.replace("%s", &i.to_string());
+        let name = instance_id(&name, i);
         let path = format!("{}.{}", path, name);
         let children = cluster_child_ids(&path, cluster);
         let instance_offset = cluster.address_offset + i * address_increment.unwrap_or_default();
@@ -186,11 +186,15 @@ fn visit_cluster(
     }
 }
 
+fn instance_id(name: &str, i: u32) -> String {
+    name.replace("[%s]", &i.to_string())
+}
+
 fn register_ids(path: &str, register: &svd::RegisterInfo, instances: u32, ids: &mut Vec<String>) {
     let name = register.name.to_lowercase();
 
     for i in 0..instances {
-        let name = name.replace("%s", &i.to_string());
+        let name = instance_id(&name, i);
         let id = format!("{}.{}", path, name);
         ids.push(id);
     }
@@ -200,7 +204,7 @@ fn cluster_ids(path: &str, cluster: &svd::ClusterInfo, instances: u32, ids: &mut
     let name = cluster.name.to_lowercase();
 
     for i in 0..instances {
-        let name = name.replace("%s", &i.to_string());
+        let name = instance_id(&name, i);
         let id = format!("{}.{}", path, name);
         ids.push(id);
     }
@@ -373,7 +377,7 @@ fn visit_register(
 
     let name = register.name.to_lowercase();
     for i in 0..instance_count {
-        let name = name.replace("%s", &i.to_string());
+        let name = instance_id(&name, i);
         let id = format!("{}.{}", path, name);
         let instance_offset = register.address_offset + i * address_increment.unwrap_or_default();
 

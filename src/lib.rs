@@ -267,7 +267,7 @@ fn cluster_child_ids(path: &str, cluster: &svd::ClusterInfo) -> Vec<String> {
 fn extract_field_reset_value(register: &svd::RegisterInfo, field: &svd::FieldInfo) -> u32 {
     let lsb = field.bit_range.offset;
     let nbits = field.bit_range.width;
-    let reset_value: u32 = register.properties.reset_value.unwrap().try_into().unwrap();
+    let reset_value: u32 = register.properties.reset_value.unwrap_or(0).try_into().unwrap();
     let mask = if nbits == 32 {
         0u32.wrapping_sub(1)
     } else {

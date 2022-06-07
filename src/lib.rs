@@ -264,6 +264,18 @@ fn cluster_child_ids(path: &str, cluster: &svd::ClusterInfo) -> Vec<String> {
     child_ids
 }
 
+fn extract_field_reset_value(register: &svd::RegisterInfo, field: &svd::FieldInfo) -> u32 {
+    let lsb = field.bit_range.offset;
+    let nbits = field.bit_range.width;
+    let reset_value: u32 = register.properties.reset_value.unwrap().try_into().unwrap();
+    let mask = if nbits == 32 {
+        0u32.wrapping_sub(1)
+    } else {
+        (1 << nbits) - 1
+    };
+    (reset_value >> lsb) & mask
+}
+
 fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
     let mut fields = Vec::new();
 
@@ -284,9 +296,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
                             lsb: field.bit_range.offset,
                             nbits: field.bit_range.width,
                             access,
-                            // FIXME: svd reset value stored in the register, need to extract for
-                            // field
-                            reset: 0,
+                            reset: extract_field_reset_value(register, &field),
                             doc: field.description.clone().unwrap_or_else(String::new),
                         };
 

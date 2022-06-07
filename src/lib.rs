@@ -5,7 +5,6 @@ use svd_rs as svd;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Rdf {
     schema: Schema,
-    design: Design,
     root: Root,
     elements: IndexMap<String, Element>,
 }
@@ -16,13 +15,10 @@ struct Schema {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Design {
-    name: String,
-    version: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 struct Root {
+    name: String,
+    display_name: String,
+    version: String,
     children: Vec<String>,
 }
 
@@ -32,8 +28,8 @@ struct Element {
     typ: ElementType,
     id: String,
     name: String,
-    addr: String,
-    offset: String,
+    addr: u32,
+    offset: u32,
     doc: String,
 }
 
@@ -54,7 +50,7 @@ struct Field {
     lsb: u32,
     nbits: u32,
     access: String,
-    reset: String,
+    reset: u32,
     doc: String,
 }
 
@@ -80,13 +76,14 @@ impl From<svd::Device> for Rdf {
 
         Self {
             schema: Schema {
-                version: "v0.1".into(),
+                version: "v0.2".into(),
             },
-            design: Design {
-                name: device.name,
+            root: Root {
+                name: device.name.clone(),
+                display_name: device.name,
                 version: device.version,
+                children,
             },
-            root: Root { children },
             elements,
         }
     }
@@ -103,8 +100,8 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
         typ: ElementType::Blk { children },
         id: path.clone(),
         name,
-        addr: format!("0x{:x}", peripheral.base_address),
-        offset: format!("0x{:x}", peripheral.base_address),
+        addr: base_address,
+        offset: base_address,
         doc: peripheral.description.unwrap_or_else(String::new),
     };
 
@@ -174,8 +171,8 @@ fn visit_cluster(
             },
             id: path.clone(),
             name,
-            addr: format!("0x{:x}", base_address + instance_offset),
-            offset: format!("0x{:x}", instance_offset),
+            addr: base_address + instance_offset,
+            offset: instance_offset,
             doc: cluster.description.clone().unwrap_or_else(String::new),
         };
 
@@ -287,7 +284,9 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
                             lsb: field.bit_range.offset,
                             nbits: field.bit_range.width,
                             access,
-                            reset: "0x0".into(),
+                            // FIXME: svd reset value stored in the register, need to extract for
+                            // field
+                            reset: 0,
                             doc: field.description.clone().unwrap_or_else(String::new),
                         };
 
@@ -340,7 +339,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
             lsb,
             nbits: msb - lsb + 1,
             access: "rsvd".to_string(),
-            reset: "0x0".to_string(),
+            reset: 0,
             doc: "Reserved".to_string(),
         })
         .collect();
@@ -356,7 +355,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
             lsb: 0,
             nbits: 32,
             access: "inferred".to_string(),
-            reset: "0x0".to_string(),
+            reset: 0,
             doc: "inferred".to_string(),
         };
         fields.push(inferred_field);
@@ -387,8 +386,8 @@ fn visit_register(
             },
             id,
             name,
-            addr: format!("0x{:x}", base_address + instance_offset),
-            offset: format!("0x{:x}", instance_offset),
+            addr: base_address + instance_offset,
+            offset: instance_offset,
             doc: register.description.clone().unwrap_or_else(String::new),
         };
 

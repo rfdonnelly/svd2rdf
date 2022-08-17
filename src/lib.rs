@@ -11,13 +11,13 @@ pub struct Rdf {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Schema {
+    name: String,
     version: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Root {
-    name: String,
-    display_name: String,
+    desc: String,
     version: String,
     children: Vec<String>,
 }
@@ -28,8 +28,7 @@ struct Element {
     typ: ElementType,
     id: String,
     name: String,
-    addr: u32,
-    offset: u32,
+    offset: String,
     doc: String,
 }
 
@@ -50,7 +49,7 @@ struct Field {
     lsb: u32,
     nbits: u32,
     access: String,
-    reset: u32,
+    reset: String,
     doc: String,
 }
 
@@ -76,11 +75,11 @@ impl From<svd::Device> for Rdf {
 
         Self {
             schema: Schema {
-                version: "v0.2".into(),
+                name: "register-description-format".into(),
+                version: "v1".into(),
             },
             root: Root {
-                name: device.name.clone(),
-                display_name: device.name,
+                desc: device.name,
                 version: device.version,
                 children,
             },
@@ -100,8 +99,7 @@ fn visit_periperal(peripheral: svd::PeripheralInfo, elements: &mut IndexMap<Stri
         typ: ElementType::Blk { children },
         id: path.clone(),
         name,
-        addr: base_address,
-        offset: base_address,
+        offset: convert_offset(base_address),
         doc: peripheral.description.unwrap_or_else(String::new),
     };
 
@@ -122,16 +120,11 @@ fn visit_register_clusters(
         match register_cluster {
             svd::RegisterCluster::Register(register) => match register {
                 svd::MaybeArray::Single(register) => {
-                    visit_register(path, base_address, register, 1, None, elements)
+                    visit_register(path, register, 1, None, elements)
                 }
-                svd::MaybeArray::Array(register, dim) => visit_register(
-                    path,
-                    base_address,
-                    register,
-                    dim.dim,
-                    Some(dim.dim_increment),
-                    elements,
-                ),
+                svd::MaybeArray::Array(register, dim) => {
+                    visit_register(path, register, dim.dim, Some(dim.dim_increment), elements)
+                }
             },
             svd::RegisterCluster::Cluster(cluster) => match cluster {
                 svd::MaybeArray::Single(cluster) => {
@@ -171,8 +164,7 @@ fn visit_cluster(
             },
             id: path.clone(),
             name,
-            addr: base_address + instance_offset,
-            offset: instance_offset,
+            offset: convert_offset(instance_offset),
             doc: cluster.description.clone().unwrap_or_else(String::new),
         };
 
@@ -264,16 +256,21 @@ fn cluster_child_ids(path: &str, cluster: &svd::ClusterInfo) -> Vec<String> {
     child_ids
 }
 
-fn extract_field_reset_value(register: &svd::RegisterInfo, field: &svd::FieldInfo) -> u32 {
+fn extract_field_reset_value(register: &svd::RegisterInfo, field: &svd::FieldInfo) -> String {
     let lsb = field.bit_range.offset;
     let nbits = field.bit_range.width;
-    let reset_value: u32 = register.properties.reset_value.unwrap_or(0).try_into().unwrap();
+    let reset_value: u32 = register
+        .properties
+        .reset_value
+        .unwrap_or(0)
+        .try_into()
+        .unwrap();
     let mask = if nbits == 32 {
         0u32.wrapping_sub(1)
     } else {
         (1 << nbits) - 1
     };
-    (reset_value >> lsb) & mask
+    ((reset_value >> lsb) & mask).to_string()
 }
 
 fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
@@ -349,7 +346,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
             lsb,
             nbits: msb - lsb + 1,
             access: "rsvd".to_string(),
-            reset: 0,
+            reset: "0".to_string(),
             doc: "Reserved".to_string(),
         })
         .collect();
@@ -365,7 +362,7 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
             lsb: 0,
             nbits: 32,
             access: "inferred".to_string(),
-            reset: 0,
+            reset: "0".to_string(),
             doc: "inferred".to_string(),
         };
         fields.push(inferred_field);
@@ -376,7 +373,6 @@ fn collect_fields(register: &svd::RegisterInfo) -> Vec<Field> {
 
 fn visit_register(
     path: &str,
-    base_address: u32,
     register: &svd::RegisterInfo,
     instance_count: u32,
     address_increment: Option<u32>,
@@ -396,13 +392,16 @@ fn visit_register(
             },
             id,
             name,
-            addr: base_address + instance_offset,
-            offset: instance_offset,
+            offset: convert_offset(instance_offset),
             doc: register.description.clone().unwrap_or_else(String::new),
         };
 
         elements.insert(element.id.clone(), element);
     }
+}
+
+fn convert_offset(offset_value: u32) -> String {
+    format!("0x{:x}", offset_value)
 }
 
 #[cfg(test)]

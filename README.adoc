@@ -2,6 +2,12 @@
 
 Converts SVD to RDF.
 
+== RDF
+
 RDF (Register Description Format) is a custom format similar to SVD (System View Description) the prioritizes client simplicity.
 
 RDF reduces the amount of client side logic needed to transform and expand SVD.
+
+== SVD
+
+The https://github.com/posborne/cmsis-svd[posborne/cmsis-svd] repository provides several SVD files.

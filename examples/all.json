@@ -26,7 +26,6 @@
       "esp32c3",
       "ht32f125x",
       "nrf51",
-      "psoc63",
       "rp2040"
     ]
   },
@@ -108,12 +107,6 @@
       "name": "nrf51",
       "type": "include",
       "url": "nrf51.svd.json"
-    },
-    "psoc63": {
-      "id": "psoc63",
-      "name": "psoc63",
-      "type": "include",
-      "url": "psoc63.svd.json"
     },
     "rp2040": {
       "id": "rp2040",

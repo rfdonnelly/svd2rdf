@@ -84,12 +84,6 @@
       "type": "include",
       "url": "STM32F030.svd.json"
     },
-    "e310x": {
-      "id": "e310x",
-      "name": "e310x",
-      "type": "include",
-      "url": "e310x.svd.json"
-    },
     "esp32c3": {
       "id": "esp32c3",
       "name": "esp32c3",

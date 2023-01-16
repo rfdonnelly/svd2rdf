@@ -11,3 +11,7 @@ RDF reduces the amount of client side logic needed to transform and expand SVD.
 == SVD
 
 The https://github.com/posborne/cmsis-svd[posborne/cmsis-svd] repository provides several SVD files.
+
+== Generate Examples
+
+ scripts/generate-examples

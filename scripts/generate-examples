@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# PREREQUISITES
+#
+#     git clone --depth 1 https://github.com/posborne/cmsis-svd.git
+
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+svd2rdf() {
+    $(git rev-parse --show-toplevel)/target/release/svd2rdf "$@"
+}
+
+create_top_rdf() {
+    $(git rev-parse --show-toplevel)/scripts/create-top-rdf "$@"
+}
+
+cargo build --release
+
+for path in cmsis-svd/data/*; do
+    svd_file=$(fd . --extension svd $path | sort | head -n 1)
+    rdf_file=$svd_file.json
+    echo "svd2rdf $svd_file > $rdf_file"
+    svd2rdf $svd_file > $rdf_file
+
+    if test $? -ne 0; then
+        echo "${RED}error:${NC} failed to convert $svd_file"
+        rm $rdf_file
+    else
+        mkdir -p examples
+        cp $svd_file $rdf_file examples
+    fi
+done
+
+rdf_files=$(fd . --extension .json examples | tr '\n' ' ')
+echo "create-top-rdf $rdf_files | jq . > examples/all.json"
+create_top_rdf $rdf_files | jq . > examples/all.json
